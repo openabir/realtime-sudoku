@@ -1,0 +1,14 @@
+npm install @liveblocks/client @liveblocks/react
+npm install @liveblocks/node
+npm i @radix-ui/react-avatar @radix-ui/react-dialog @radix-ui/react-dropdown-menu @radix-ui/react-label @radix-ui/react-popover @radix-ui/react-scroll-area @radix-ui/react-slot @radix-ui/react-switch @radix-ui/react-toggle @radix-ui/react-toggle-group @radix-ui/react-tooltip
+npm install --save canvas-confetti
+npm i class-variance-authority
+npm install --save clsx
+npm install motion
+npm install lucide-react
+npm install next-auth
+npm install next-themes
+npm i react-qr-code
+npm install sonner
+npm i tailwind-merge
+npm i tailwindcss-animate
