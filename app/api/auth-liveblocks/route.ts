@@ -2,28 +2,56 @@ import { liveblocks } from "@/liveblocks.server.config";
 import { AVATAR_COLORS } from "@/lib/constants";
 
 export async function POST(request: Request) {
-  const res = await request.json();
-  // generate random user
-  const user = {
-    //id: randomId(30),
-    id: "1",
-    info: {
-      name: res.name,
-      avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${
-        res.name
-      }&scale=80&backgroundColor=0a5b83&backgroundRotation[]&shapeColor=${shapeColor()}`,
-    },
-  };
+  try {
+    const res = await request.json();
 
-  // Start an auth session inside your endpoint
+    // Validate required fields
+    if (!res.name || !res.room) {
+      return new Response(
+        JSON.stringify({ error: "Missing required fields: name and room" }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
 
-  const session = liveblocks.prepareSession(user.id, { userInfo: user.info });
+    // generate random user
+    const user = {
+      id: "1",
+      info: {
+        name: res.name,
+        avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${
+          res.name
+        }&scale=80&backgroundColor=0a5b83&backgroundRotation[]&shapeColor=${shapeColor()}`,
+      },
+    };
 
-  session.allow(res.room, session.FULL_ACCESS);
+    // Start an auth session inside your endpoint
+    const session = liveblocks.prepareSession(user.id, { userInfo: user.info });
 
-  // Authorize the user and return the result
-  const { status, body } = await session.authorize();
-  return new Response(body, { status });
+    session.allow(res.room, session.FULL_ACCESS);
+
+    // Authorize the user and return the result
+    const { status, body } = await session.authorize();
+
+    return new Response(body, {
+      status,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  } catch (error) {
+    console.error("Liveblocks auth error:", error);
+    return new Response(JSON.stringify({ error: "Authentication failed" }), {
+      status: 500,
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+  }
 }
 
 function shapeColor() {
