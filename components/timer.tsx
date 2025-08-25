@@ -49,7 +49,7 @@ export function Timer() {
         disabled={isDisabled}
         className="disabled:opacity-50 transition-colors duration-200"
         style={{
-          color: isRunning && !isDisabled ? "#ff5700" : "#6b7280",
+          color: isRunning && !isDisabled ? "#ff5700" : "#ff5700",
         }}
         onClick={func}
       >

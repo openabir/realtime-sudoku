@@ -1,7 +1,6 @@
 import { Chat } from "@/components/chat";
 import { GameSettings } from "@/components/game-settings";
 import { LiveblocksRoom } from "@/components/liveblocks-room";
-import { Share } from "@/components/share";
 import { Mistakes } from "@/components/mistakes";
 import { ModeToggle } from "@/components/mode-toggle";
 import { Numpad } from "@/components/num-pad";

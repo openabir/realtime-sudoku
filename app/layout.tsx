@@ -27,7 +27,7 @@ export default function RootLayout({
     <html lang="en" className="suppressHydrationWarning">
       <body
         className={cn(
-          "flex min-h-svh items-center justify-center ",
+          "flex min-h-svh items-center justify-center bg-background font-sans antialiased",
           inter.className
         )}
       >
