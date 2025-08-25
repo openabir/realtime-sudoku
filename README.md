@@ -163,4 +163,4 @@ This project is open source and available under the [MIT License](LICENSE).
 
 **openabir** - [@openabir](https://github.com/openabir)
 
-Project Link: [https://github.com/openabir/sudoku-online](https://github.com/openabir/sudoku-online)
+Project Link: [https://github.com/openabir/realtime-sudoku](https://github.com/openabir/realtime-sudoku)
