@@ -71,7 +71,7 @@ export function StartGameDialog() {
         </div>
         <ToggleGroup
           type="single"
-          className="w-full flex-col items-start"
+          className="w-full gap-2 flex-col items-start"
           onValueChange={(type) => setDifficulty(type)}
         >
           {DIFFICULTIES.map((difficulty) => (
@@ -79,7 +79,7 @@ export function StartGameDialog() {
               key={difficulty}
               value={difficulty}
               aria-label={`Toggle ${difficulty}`}
-              className="w-full"
+              className="w-full rounded-md border px-3 py-2 data-[state=on]:bg-primary data-[state=on]:text-primary-foreground"
             >
               {difficulty}
             </ToggleGroupItem>
