@@ -1,175 +1,175 @@
-"use client"
+"use client";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { LiveList, LiveObject } from "@liveblocks/client"
-import { useMutation, useStorage } from "@liveblocks/react/suspense"
-import confetti from "canvas-confetti"
-import { Delete } from "lucide-react"
-import { useContext } from "react"
-import { NotesContext } from "../app/context/notes-context"
-import { TableCellContext } from "../app/context/tablecell-context"
-import { DeleteButton } from "./delete-button"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { LiveList, LiveObject } from "@liveblocks/client";
+import { useMutation, useStorage } from "@liveblocks/react/suspense";
+import confetti from "canvas-confetti";
+import { Delete } from "lucide-react";
+import { useContext } from "react";
+import { NotesContext } from "../app/context/notes-context";
+import { TableCellContext } from "../app/context/tablecell-context";
+import { DeleteButton } from "./delete-button";
 
 type SelectNumProps = {
-  numPad: number | null
-  index: number | null
-}
+  numPad: number | null;
+  index: number | null;
+};
 
 export const Numpad = () => {
-  const { tableCell, onClickTableCell } = useContext(TableCellContext)
-  const { notesMode } = useContext(NotesContext)
+  const { tableCell, onClickTableCell } = useContext(TableCellContext);
+  const { notesMode } = useContext(NotesContext);
 
-  const isRunning = useStorage((root) => root.isRunning)
-  const isSolved = useStorage((root) => root.isSolved)
+  const isRunning = useStorage((root) => root.isRunning);
+  const isSolved = useStorage((root) => root.isSolved);
 
   const erase = useMutation(({ storage }, index: number) => {
-    if (index === null) return
+    if (index === null) return;
 
-    const sudoku = storage.get("sudoku")
-    const undoHistory = storage.get("undoHistory")
+    const sudoku = storage.get("sudoku");
+    const undoHistory = storage.get("undoHistory");
 
-    if (sudoku.get(index)?.get("immutable") === true) return
+    if (sudoku.get(index)?.get("immutable") === true) return;
 
-    let currentValue = sudoku?.get(index)?.get("value")
-    if (currentValue === undefined) return
+    let currentValue = sudoku?.get(index)?.get("value");
+    if (currentValue === undefined) return;
 
     if (typeof currentValue === "object" && currentValue !== null) {
-      currentValue = currentValue.clone()
+      currentValue = currentValue.clone();
     }
 
     const history = new LiveObject<HistoryStack>({
       index,
       valueBefore: currentValue,
       valueAfter: 0,
-      mode: "erase"
-    })
-    undoHistory.push(history)
+      mode: "erase",
+    });
+    undoHistory.push(history);
 
     sudoku.get(index)?.update({
       value: 0,
-      valid: false
-    })
-  }, [])
+      valid: false,
+    });
+  }, []);
 
   const selectNum = useMutation(
     ({ storage }, { numPad, index }: SelectNumProps) => {
-      if (index === null || numPad === null) return
-      const sudoku = storage?.get("sudoku")
+      if (index === null || numPad === null) return;
+      const sudoku = storage?.get("sudoku");
 
       if (sudoku.get(index)?.get("immutable") === true) {
-        return
+        return;
       }
-      onClickTableCell({ value: numPad, index })
+      onClickTableCell({ value: numPad, index });
 
-      let currentValue = sudoku?.get(index)?.get("value")
+      let currentValue = sudoku?.get(index)?.get("value");
 
-      if (currentValue === undefined || currentValue === null) return
+      if (currentValue === undefined || currentValue === null) return;
 
       //Toggle number if already present
       if (currentValue === numPad) {
-        sudoku.get(index)?.set("value", 0)
-        return
+        sudoku.get(index)?.set("value", 0);
+        return;
       }
 
-      const redoHistory = storage.get("redoHistory")
-      const undoHistory = storage.get("undoHistory")
+      const redoHistory = storage.get("redoHistory");
+      const undoHistory = storage.get("undoHistory");
 
       if (redoHistory.length > 0) {
-        redoHistory.clear()
+        redoHistory.clear();
       }
 
-      const cell = sudoku.get(index!)
-      const valid = cell?.get("key") === numPad
+      const cell = sudoku.get(index!);
+      const valid = cell?.get("key") === numPad;
 
       if (!valid) {
-        storage.set("mistakeCount", storage.get("mistakeCount") + 1)
+        storage.set("mistakeCount", storage.get("mistakeCount") + 1);
       }
 
-      cell?.update({ value: numPad, valid })
+      cell?.update({ value: numPad, valid });
 
-      const isGameSolved = sudoku.every((cell) => cell.get("valid") === true)
+      const isGameSolved = sudoku.every((cell) => cell.get("valid") === true);
 
       if (isGameSolved) {
-        storage.update({ isSolved: true, isRunning: false })
+        storage.update({ isSolved: true, isRunning: false });
       }
 
       if (typeof currentValue === "object") {
-        currentValue = currentValue.clone()
+        currentValue = currentValue.clone();
       }
 
       const history = new LiveObject<HistoryStack>({
         index,
         valueBefore: currentValue,
         valueAfter: numPad,
-        mode: "default"
-      })
+        mode: "default",
+      });
 
-      undoHistory.push(history)
+      undoHistory.push(history);
     },
     []
-  )
+  );
 
   const addNotes = useMutation(
     ({ storage }, { index, numPad }: { index: number; numPad: number }) => {
-      if (index === null) return
+      if (index === null) return;
 
-      const sudoku = storage.get("sudoku")
+      const sudoku = storage.get("sudoku");
       if (sudoku.get(index)?.get("immutable") === true) {
-        return
+        return;
       }
 
-      const undoHistory = storage.get("undoHistory")
+      const undoHistory = storage.get("undoHistory");
 
-      const cell = sudoku.get(index)
+      const cell = sudoku.get(index);
 
       if (cell?.get("valid") === true) {
-        cell.set("valid", false)
+        cell.set("valid", false);
       }
 
-      const value = cell?.get("value")
-      if (value === undefined) return
+      const value = cell?.get("value");
+      if (value === undefined) return;
 
       if (typeof value === "object" && value !== null) {
-        const after = [...value?.toImmutable()]
+        const after = [...value?.toImmutable()];
 
-        const currentValue = value?.get(numPad - 1)
-        if (currentValue === undefined) return
+        const currentValue = value?.get(numPad - 1);
+        if (currentValue === undefined) return;
 
-        after[numPad - 1] = currentValue > 0 ? 0 : numPad
+        after[numPad - 1] = currentValue > 0 ? 0 : numPad;
         const history = new LiveObject<HistoryStack>({
           index,
           valueBefore: value?.clone(),
           valueAfter: new LiveList(after),
-          mode: "notes"
-        })
-        undoHistory.push(history)
-        value.set(numPad - 1, currentValue > 0 ? 0 : numPad)
-        return
+          mode: "notes",
+        });
+        undoHistory.push(history);
+        value.set(numPad - 1, currentValue > 0 ? 0 : numPad);
+        return;
       }
 
-      const arr = [0, 0, 0, 0, 0, 0, 0, 0, 0]
-      arr[numPad - 1] = numPad
-      cell?.set("value", new LiveList(arr))
+      const arr = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+      arr[numPad - 1] = numPad;
+      cell?.set("value", new LiveList(arr));
 
       const history = new LiveObject<HistoryStack>({
         index,
         valueBefore: value,
         valueAfter: new LiveList(arr),
-        mode: "notes"
-      })
+        mode: "notes",
+      });
 
-      undoHistory.push(history)
+      undoHistory.push(history);
     },
     []
-  )
+  );
 
   if (isSolved) {
-    const end = Date.now() + 3 * 1000 // 3 seconds
-    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"]
+    const end = Date.now() + 3 * 1000; // 3 seconds
+    const colors = ["#a786ff", "#fd8bbc", "#eca184", "#f8deb1"];
 
     const frame = () => {
-      if (Date.now() > end) return
+      if (Date.now() > end) return;
 
       confetti({
         particleCount: 2,
@@ -177,20 +177,20 @@ export const Numpad = () => {
         spread: 55,
         startVelocity: 60,
         origin: { x: 0, y: 0.5 },
-        colors: colors
-      })
+        colors: colors,
+      });
       confetti({
         particleCount: 2,
         angle: 120,
         spread: 55,
         startVelocity: 60,
         origin: { x: 1, y: 0.5 },
-        colors: colors
-      })
+        colors: colors,
+      });
 
-      requestAnimationFrame(frame)
-    }
-    frame()
+      requestAnimationFrame(frame);
+    };
+    frame();
   }
 
   return (
@@ -200,18 +200,18 @@ export const Numpad = () => {
           disabled={!isRunning || isSolved}
           variant="secondary"
           key={index}
-          className="aspect-square size-full rounded p-2 text-center sm:font-medium md:size-14 md:text-lg"
+          className="aspect-square size-full rounded p-2 text-center text-sm font-medium sm:font-medium sm:h-14 sm:w-14 lg:size-14 lg:text-lg"
           onClick={() => {
             if (notesMode) {
-              addNotes({ numPad, index: tableCell.index! })
-              return
+              addNotes({ numPad, index: tableCell.index! });
+              return;
             }
-            selectNum({ numPad, index: tableCell.index })
+            selectNum({ numPad, index: tableCell.index });
           }}
         >
           <p
             className={cn("transition-all duration-200 ease-in-out", {
-              "md:text-xs ": notesMode
+              "text-xs sm:text-sm lg:text-xs": notesMode,
             })}
           >
             {numPad}
@@ -221,10 +221,10 @@ export const Numpad = () => {
       <DeleteButton
         disabled={!isRunning || isSolved}
         variant="secondary"
-        className="hidden aspect-square size-14 rounded p-2 text-center sm:flex"
+        className="aspect-square size-full rounded p-2 text-center flex font-medium text-sm sm:flex sm:font-medium sm:h-14 sm:w-14 lg:size-14 lg:text-lg"
       >
         <Delete onClick={() => erase(tableCell.index!)} />
       </DeleteButton>
     </>
-  )
-}
+  );
+};

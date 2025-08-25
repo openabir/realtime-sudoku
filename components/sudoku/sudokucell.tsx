@@ -71,7 +71,9 @@ export const SudokuCell: React.FC<SudokuCellProps> = ({
     "text-correct": valid && validateMode,
     "text-incorrect": !valid && validateMode,
     "bg-primary/15": otherCellWithSameValue,
-    "bg-correct/25": currentSelectedCell,
+    "bg-correct/25": currentSelectedCell && value !== 0,
+    "bg-[#ff5700]/20":
+      currentSelectedCell && (value === 0 || value === undefined),
   });
 
   return (
