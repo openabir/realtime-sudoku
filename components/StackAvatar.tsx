@@ -171,7 +171,7 @@ const InviteDialog = () => {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="secondary" className="h-auto first:mr-auto sm:hidden">
+        <Button variant="secondary" className="h-auto first:mr-auto lg:hidden">
           Invite
         </Button>
       </DialogTrigger>
