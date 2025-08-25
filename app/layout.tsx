@@ -24,10 +24,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" className="suppressHydrationWarning">
       <body
         className={cn(
-          "flex min-h-svh items-center justify-center",
+          "flex min-h-svh items-center justify-center ",
           inter.className
         )}
       >

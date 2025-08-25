@@ -73,7 +73,7 @@ export function LiveblocksRoom({ children, roomId }: RoomProps) {
   return (
     <LiveblocksProvider
       authEndpoint={async (room) => {
-        const response = await fetch("/api/liveblocks-auth", {
+        const response = await fetch("/api/auth-liveblocks", {
           method: "POST",
           body: JSON.stringify({ room, name })
         })
